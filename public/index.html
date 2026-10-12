@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeployGuard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z' fill='%232a78d6'/><path d='m11 16 4 4 7-8' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="login" class="login" hidden>
+    <form class="login-card" id="login-form">
+      <div class="brand brand-lg"><span class="brand-mark"></span>DeployGuard</div>
+      <p class="muted">Deployment history, health and alerts for your team.</p>
+      <label>Password<input type="password" name="password" autocomplete="current-password" required autofocus /></label>
+      <button class="btn primary" type="submit">Sign in</button>
+      <p class="error" id="login-error" role="alert"></p>
+    </form>
+  </div>
+
+  <div id="shell" class="shell" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="#/"><span class="brand-mark"></span>DeployGuard</a>
+      <nav>
+        <a href="#/" data-nav="overview">Overview</a>
+        <a href="#/deployments" data-nav="deployments">Deployments</a>
+        <a href="#/projects" data-nav="projects">Projects</a>
+        <a href="#/alerts" data-nav="alerts">Alerts</a>
+        <a href="#/docs" data-nav="docs">Connect CI</a>
+      </nav>
+      <div class="sidebar-foot">
+        <button class="btn ghost small" id="theme-toggle" type="button" title="Toggle theme">◐ Theme</button>
+        <button class="btn ghost small" id="logout" type="button">Sign out</button>
+      </div>
+    </aside>
+    <main id="view" class="view" tabindex="-1"></main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+  <dialog id="modal"></dialog>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

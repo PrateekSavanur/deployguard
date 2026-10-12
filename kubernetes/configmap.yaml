@@ -1,0 +1,52 @@
+# Declarative homelab setup, mounted at /config/bootstrap.json and re-applied when it changes.
+# Project slugs match the Argo CD Application names, which Argo CD Notifications sends as "project".
+# Health URLs are in-cluster, so post-deploy verification runs right after every Argo CD sync.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deployguard-bootstrap
+  namespace: deployguard
+data:
+  bootstrap.json: |
+    {
+      "projects": [
+        {
+          "slug": "root", "name": "Homelab GitOps (App of Apps)",
+          "repo_url": "https://github.com/PrateekSavanur/Homelab-Infra",
+          "environments": [{ "name": "homelab" }]
+        },
+        {
+          "slug": "homelab-services", "name": "Jellyfin & shared storage",
+          "repo_url": "https://github.com/PrateekSavanur/Homelab-Infra",
+          "environments": [{ "name": "homelab", "health_url": "http://jellyfin.homelab.svc.cluster.local:8096/health" }]
+        },
+        {
+          "slug": "portfolio", "name": "Portfolio website",
+          "repo_url": "https://github.com/PrateekSavanur/ArgoCD-Enabled-Website",
+          "environments": [{ "name": "homelab", "health_url": "http://portfolio.website.svc.cluster.local/" }]
+        },
+        {
+          "slug": "cloudflared", "name": "Cloudflare tunnel",
+          "repo_url": "https://github.com/PrateekSavanur/Homelab-Infra",
+          "environments": [{ "name": "homelab", "health_url": "https://prateeksavanur.dev/" }]
+        },
+        {
+          "slug": "homelert", "name": "Homelert",
+          "repo_url": "https://github.com/PrateekSavanur/homelert",
+          "environments": [{ "name": "homelab", "health_url": "http://homelert.homelert.svc.cluster.local/health" }]
+        },
+        {
+          "slug": "deployguard", "name": "DeployGuard",
+          "repo_url": "https://github.com/PrateekSavanur/deployguard",
+          "environments": [{ "name": "homelab" }]
+        }
+      ],
+      "channels": [
+        {
+          "name": "Homelert (Telegram)",
+          "type": "webhook",
+          "config": { "url": "http://homelert.homelert.svc.cluster.local/webhook/deployguard" },
+          "events": ["deploy_failed", "deploy_rolled_back", "verification_failed", "env_down", "env_recovered", "rollback"]
+        }
+      ]
+    }

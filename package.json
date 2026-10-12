@@ -1,0 +1,20 @@
+{
+  "name": "deployguard",
+  "version": "0.1.0",
+  "description": "Deployment monitoring for small teams — history, health checks, failure alerts and release summaries",
+  "main": "src/server.js",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/server.js",
+    "seed": "node --disable-warning=ExperimentalWarning scripts/seed.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/"
+  },
+  "dependencies": {
+    "@fastify/static": "^10.1.6",
+    "fastify": "^5.12.5"
+  }
+}

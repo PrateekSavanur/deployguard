@@ -1,0 +1,79 @@
+# Secrets (ADMIN_PASSWORD / SESSION_SECRET / INTEGRATION_API_KEY) come from the deployguard-secrets
+# Secret, created by Ansible (homelab repo: roles/deployguard) — not tracked in git.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployguard
+  namespace: deployguard
+  labels:
+    app: deployguard
+spec:
+  replicas: 1             # SQLite on a RWO volume — must stay at 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: deployguard
+  template:
+    metadata:
+      labels:
+        app: deployguard
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: deployguard
+          image: prateeksavanur/deployguard:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DB_PATH
+              value: /data/deployguard.db
+            - name: BOOTSTRAP_PATH
+              value: /config/bootstrap.json
+            - name: PUBLIC_URL
+              value: http://deployguard.homelab.local
+            - name: HEALTH_INTERVAL_SECONDS
+              value: "60"
+            - name: VERIFY_WINDOW_SECONDS
+              value: "300"
+          envFrom:
+            - secretRef:
+                name: deployguard-secrets
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "96Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: bootstrap
+              mountPath: /config
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: deployguard-data
+        - name: bootstrap
+          configMap:
+            name: deployguard-bootstrap

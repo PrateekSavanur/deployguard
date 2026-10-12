@@ -1,0 +1,22 @@
+services:
+  deployguard:
+    build: .
+    image: prateeksavanur/deployguard:latest
+    container_name: deployguard
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - deployguard-data:/data
+    env_file: .env
+    environment:
+      - PORT=3000
+      - DB_PATH=/data/deployguard.db
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  deployguard-data:

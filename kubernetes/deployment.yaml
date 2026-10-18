@@ -37,7 +37,7 @@ spec:
             - name: BOOTSTRAP_PATH
               value: /config/bootstrap.json
             - name: PUBLIC_URL
-              value: http://deployguard.homelab.local
+              value: https://deployguard.home.prateeksavanur.dev
             - name: HEALTH_INTERVAL_SECONDS
               value: "60"
             - name: VERIFY_WINDOW_SECONDS

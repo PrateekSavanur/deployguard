@@ -26,7 +26,7 @@ spec:
         fsGroup: 10001
       containers:
         - name: deployguard
-          image: prateeksavanur/deployguard:97dc06c48e190a1250fedbfb5052d0ebe25c98b4
+          image: prateeksavanur/deployguard:ed3f3d974c3c98253b3e52ad0fd295e26a723a3e
           ports:
             - containerPort: 3000
           env:
